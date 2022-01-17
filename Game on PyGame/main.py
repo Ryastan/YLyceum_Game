@@ -3,6 +3,7 @@ from pygame import *
 from hero import Hero
 from portal import Portal
 from levels import Levels
+from blocks import Platforms
 
 run_game = True #
 W, H = 600, 400 #Ширина и высота окна
@@ -21,26 +22,30 @@ right = False
 up = False
 hero = Hero(55, 55)#Класс героя
 
+entities = pygame.sprite.Group() # Все объекты
+platforms = [] #Все Платформы
+entities.add(hero)
+
 level1 = ["-------------------------",
-                        "-                       -",
-                        "-                       -",
-                        "-                       -",
-                        "-            --         -",
-                        "-                       -",
-                        "--                      -",
-                        "-                       -",
-                        "-                   --- -",
-                        "-                       -",
-                        "-                       -",
-                        "-      ---              -",
-                        "-                       -",
-                        "-   -----------         -",
-                        "-                       -",
-                        "-                -      -",
-                        "-                   --  -",
-                        "-                       -",
-                        "-                       -",
-                        "-------------------------"]
+          "-                       -",
+          "-                       -",
+          "-               ------- -",
+          "-            --         -",
+          "-                       -",
+          "--                      -",
+          "-                       -",
+          "-                   --- -",
+          "-                       -",
+          "-                       -",
+          "-      ---              -",
+          "-                       -",
+          "-                       -",
+          "-                       -",
+          "-   -------      -      -",
+          "-                       -",
+          "-             -----------",
+          "-                       -",
+          "-------------------------"]
 
 surface = pygame.display.set_mode((W, H))
 pygame.display.set_caption('Game')
@@ -73,16 +78,15 @@ while run_game: #Главный цикл игры
     for row in level1: # вся строка
         for col in row: # каждый символ
             if col == "-":
-                #создаем блок, заливаем его цветом и рисеум его
-                platform = Surface((W//25, H//20))
-                platform.fill(Color(GREEN)) 
-                surface.blit(platform,(x,y))
+                platform = Platforms(x,y, W//25, H//20, GREEN)
+                entities.add(platform)
+                platforms.append(platform)
             x += W//25 #блоки платформы ставятся на ширине блоков
         y += H//20    #то же самое и с высотой
         x = 0                   #на каждой новой строчке начинаемplatform нуля
 
-    hero.update(left, right, up) # передвижение
-    hero.draw(surface)
+    hero.update(left, right, up, platforms) # передвижение
+    entities.draw(surface)
 
     pygame.display.update() 
     clock.tick(FPS)
