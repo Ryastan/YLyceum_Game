@@ -14,7 +14,7 @@ class Hero(sprite.Sprite):
         self.startY = y
         self.image = Surface((WIDTH,HEIGHT))
         self.image.fill(Color(COLOR))
-        self.rect = Rect(x, y, WIDTH, HEIGHT) # прямоугольный объект
+        self.rect = Rect(x, y, WIDTH, HEIGHT)
         self.y_speed = 0 # скорость вертикального перемещения
         self.ground = False
         self.jump_power = 10
@@ -32,13 +32,13 @@ class Hero(sprite.Sprite):
         if right:
             self.x_speed = MOVE_SPEED # Право = x + n
 
-        if not(left or right): # стоим, когда нет указаний идти
+        if not(left or right):
             self.x_speed = 0
 
         if not self.ground:
             self.y_speed += self.gravity
         
-        self.ground = False; # Мы не знаем, когда мы на земле((   
+        self.ground = False  
 
         self.rect.y += self.y_speed
         self.collision_check(0, self.y_speed, platforms)
@@ -50,19 +50,19 @@ class Hero(sprite.Sprite):
     
     def collision_check(self, x_speed, y_speed, platforms):
         for platform in platforms:
-            if sprite.collide_rect(self, platform): # если есть пересечение платформы с игроком
+            if sprite.collide_rect(self, platform):
 
-                if x_speed > 0:                      # если движется вправо
-                    self.rect.right = platform.rect.left # то не движется вправо
+                if x_speed > 0:                
+                    self.rect.right = platform.rect.left
 
-                if x_speed < 0:                      # если движется влево
-                    self.rect.left = platform.rect.right # то не движется влево
+                if x_speed < 0:
+                    self.rect.left = platform.rect.right 
 
-                if y_speed > 0:                      # если падает вниз
-                    self.rect.bottom = platform.rect.top # то не падает вниз
-                    self.ground = True          # и становится на что-то твердое
-                    self.y_speed = 0                 # и энергия падения пропадает
+                if y_speed > 0: 
+                    self.rect.bottom = platform.rect.top 
+                    self.ground = True 
+                    self.y_speed = 0 
 
-                if y_speed < 0:                      # если движется вверх
-                    self.rect.top = platform.rect.bottom # то не движется вверх
-                    self.y_speed = 0                 # и энергия прыжка пропадает
+                if y_speed < 0:  
+                    self.rect.top = platform.rect.bottom 
+                    self.y_speed = 0   

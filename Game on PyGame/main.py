@@ -75,15 +75,15 @@ while run_game: #Главный цикл игры
     surface.blit(bg, (0, 0))
     x = 0
     y = 0
-    for row in level1: # вся строка
-        for col in row: # каждый символ
+    for row in level1:
+        for col in row:
             if col == "-":
                 platform = Platforms(x,y, W//25, H//20, GREEN)
                 entities.add(platform)
                 platforms.append(platform)
-            x += W//25 #блоки платформы ставятся на ширине блоков
-        y += H//20    #то же самое и с высотой
-        x = 0                   #на каждой новой строчке начинаемplatform нуля
+            x += W//25 
+        y += H//20 
+        x = 0
 
     hero.update(left, right, up, platforms) # передвижение
     entities.draw(surface)
