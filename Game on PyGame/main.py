@@ -52,6 +52,17 @@ pygame.display.set_caption('Game')
 
 bg = Surface((W, H))
 bg.fill(RED)
+x = 0
+y = 0
+for row in level1:
+    for col in row:
+        if col == "-":
+            platform = Platforms(x, y, W // 25, H // 20, GREEN)
+            entities.add(platform)
+            platforms.append(platform)
+        x += W // 25
+    y += H // 20
+    x = 0
 
 while run_game: #Главный цикл игры
     for event in pygame.event.get():
@@ -71,24 +82,15 @@ while run_game: #Главный цикл игры
                 right = False
             elif event.key == K_UP:
                 up = False
-            
     surface.blit(bg, (0, 0))
-    x = 0
-    y = 0
-    for row in level1:
-        for col in row:
-            if col == "-":
-                platform = Platforms(x,y, W//25, H//20, GREEN)
-                entities.add(platform)
-                platforms.append(platform)
-            x += W//25 
-        y += H//20 
-        x = 0
+
+
 
     hero.update(left, right, up, platforms) # передвижение
     entities.draw(surface)
 
-    pygame.display.update() 
-    clock.tick(FPS)
+    pygame.display.update()
+    pygame.display.flip()
+    clock.tick(60)
 
 pygame.quit()
