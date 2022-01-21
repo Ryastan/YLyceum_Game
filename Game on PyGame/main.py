@@ -21,7 +21,6 @@ left = False
 right = False
 up = False
 hero = Hero(55, 55)#Класс героя
-
 entities = pygame.sprite.Group() # Все объекты
 platforms = [] #Все Платформы
 entities.add(hero)
