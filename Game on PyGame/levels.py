@@ -4,9 +4,17 @@ from hero import Hero
 from portal import Portal
 from blocks import Platforms
 from booster import coal
+import os
+import sys
 
-
-
+def load_image(name, colorkey=None):
+    fullname = os.path.join("sprites",name)
+    # если файл не существует, то выходим
+    if not os.path.isfile(fullname):
+        print(f"Файл с изображением '{fullname}' не найден")
+        sys.exit()
+    image = pygame.image.load(fullname)
+    return image
 
 
 
@@ -120,4 +128,61 @@ class Levels:
             pygame.display.update()
             pygame.display.flip()
             print(hero.time)
+            clock.tick(60)
+
+
+    def load_menu(self, W, H):
+        clock = pygame.time.Clock()
+        FPS = 60  # ФПС игры
+
+        # Цвета в RGB
+        WHITE = (255, 255, 255)
+        BLACK = (0, 0, 0)
+        RED = (255, 0, 0)
+        GREEN = (0, 255, 0)
+        BLUE = (0, 0, 255)
+        entities = pygame.sprite.Group()  # Все объекты
+        backentities = pygame.sprite.Group()
+        surface = pygame.display.set_mode((W, H))
+        pygame.display.set_caption('Game')
+        run_game = True
+        bg = Surface((W, H))
+        bg.fill(RED)
+        x = 0
+        y = 0
+        class backg(pygame.sprite.Sprite):
+            def __init__(self):
+                super().__init__(backentities)
+                self.image = load_image("menu_back.png")
+                self.rect = self.image.get_rect()
+                self.rect.x = 0
+                self.rect.y = 0
+        class textm(pygame.sprite.Sprite):
+            def __init__(self, posx, posy):
+                super().__init__(entities)
+                self.image = load_image("menutext_sprite.png")
+                self.rect = self.image.get_rect()
+                self.rect.x = posx
+                self.rect.y = posy
+
+
+        text_in_m = textm(3, 300)
+        back_ground_menu = backg()
+
+        backentities.add(text_in_m)
+        entities.add(back_ground_menu)
+
+
+        while run_game:  # Главный цикл игры
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run_game = False
+                if event.type == KEYDOWN:
+                    run_game = False
+            backentities.draw(bg)
+            entities.draw(surface)
+            surface.blit(bg, (0, 0))
+
+            pygame.display.update()
+            pygame.display.flip()
             clock.tick(60)

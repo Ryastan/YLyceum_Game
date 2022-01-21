@@ -20,7 +20,7 @@ BLUE = (0, 0, 255)
 
 level = Levels()
 level1 = Levels()
-level.load(W, H, 1)
+level.load_menu(W, H)
 level1.load(W, H, 1)
 
 pygame.quit()
