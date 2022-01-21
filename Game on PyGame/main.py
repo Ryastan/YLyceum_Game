@@ -4,6 +4,7 @@ from hero import Hero
 from portal import Portal
 from levels import Levels
 from blocks import Platforms
+from booster import double_jump
 
 run_game = True #
 W, H = 900, 1000 #Ширина и высота окна
@@ -20,14 +21,14 @@ BLUE = (0, 0, 255)
 left = False
 right = False
 up = False
-hero = Hero(55, 55)#Класс героя
+hero = Hero(550, 550)#Класс героя
 entities = pygame.sprite.Group() # Все объекты
 platforms = [] #Все Платформы
 entities.add(hero)
 
 level1 = ["-------------------------",
           "-                       -",
-          "-                       -",
+          "-     1                 -",
           "-               ------- -",
           "-            --         -",
           "-                       -",
@@ -59,6 +60,10 @@ for row in level1:
             platform = Platforms(x, y, W // 25, H // 20, GREEN)
             entities.add(platform)
             platforms.append(platform)
+        if col == "1":
+            dd = double_jump(BLACK)
+            entities.add(dd)
+            platforms.append(dd)
         x += W // 25
     y += H // 20
     x = 0
