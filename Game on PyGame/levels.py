@@ -18,6 +18,8 @@ def load_image(name, colorkey=None):
 
 
 
+
+
 class Levels:
     def __init__(self):
         self.level1 = ["-------------------------",
@@ -58,6 +60,17 @@ class Levels:
         entities = pygame.sprite.Group()  # Все объекты
         platforms = []  # Все Платформы
         entities.add(hero)
+        bentities = pygame.sprite.Group()  # Обьекты заднего плана
+
+        class backg(pygame.sprite.Sprite):
+            def __init__(self):
+                super().__init__(bentities)
+                self.image = load_image("menu_back.png")
+                self.rect = self.image.get_rect()
+                self.rect.x = 0
+                self.rect.y = 0
+        backgr = backg()
+        bentities.add(backgr)
 
         level1 = ["-------------------------",
                   "-                       -",
@@ -84,7 +97,7 @@ class Levels:
         pygame.display.set_caption('Game')
         run_game = True
         bg = Surface((W, H))
-        bg.fill(RED)
+        bentities.draw(bg)
         x = 0
         y = 0
         for row in level1:
@@ -124,6 +137,7 @@ class Levels:
 
             hero.update(left, right, up, platforms)  # передвижение
             entities.draw(surface)
+            bentities.draw(bg)
             hero.time -= 1
             pygame.display.update()
             pygame.display.flip()
