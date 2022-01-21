@@ -4,10 +4,10 @@ from hero import Hero
 from portal import Portal
 from levels import Levels
 from blocks import Platforms
-from booster import double_jump
+from booster import coal
 
 run_game = True #
-W, H = 900, 1000 #Ширина и высота окна
+W, H = 1500, 1000 #Ширина и высота окна
 clock = pygame.time.Clock()
 FPS = 60 #ФПС игры
 
@@ -34,7 +34,7 @@ level1 = ["-------------------------",
           "-                       -",
           "--                      -",
           "-                       -",
-          "-                   --- -",
+          "-                       -",
           "-                       -",
           "-                       -",
           "-      ---              -",
@@ -61,9 +61,8 @@ for row in level1:
             entities.add(platform)
             platforms.append(platform)
         if col == "1":
-            dd = double_jump(BLACK)
-            entities.add(dd)
-            platforms.append(dd)
+            c = coal(BLACK)
+            entities.add(c)
         x += W // 25
     y += H // 20
     x = 0
@@ -92,9 +91,10 @@ while run_game: #Главный цикл игры
 
     hero.update(left, right, up, platforms) # передвижение
     entities.draw(surface)
-
+    hero.time -= 1
     pygame.display.update()
     pygame.display.flip()
+    print(hero.time)
     clock.tick(60)
 
 pygame.quit()
