@@ -10,7 +10,7 @@ class Hero(sprite.Sprite):
     def __init__(self, x, y):
         sprite.Sprite.__init__(self)
         self.time = 15 * 60
-        self.dead = 0
+        self.live = 1
         self.x_speed = 0   #скорость перемещения
         self.startX = x # Начальная позиция Х
         self.startY = y
@@ -25,6 +25,7 @@ class Hero(sprite.Sprite):
     def update(self,  left, right, up, platforms):
         if self.time < 1:
             self.kill()
+            self.live = 0
         if up:
             if self.ground:
                 self.y_speed = -self.jump_power
