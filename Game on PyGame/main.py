@@ -6,7 +6,7 @@ from levels import Levels
 from blocks import Platforms
 
 run_game = True #
-W, H = 600, 400 #Ширина и высота окна
+W, H = 900, 1000 #Ширина и высота окна
 clock = pygame.time.Clock()
 FPS = 60 #ФПС игры
 
