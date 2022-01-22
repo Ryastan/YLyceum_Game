@@ -13,9 +13,21 @@ def load_image(name, colorkey=None):
     return image
 
 class Platforms(sprite.Sprite):
+    def __init__(self, x, y, W, H, color = 1):
+        sprite.Sprite.__init__(self)
+        if color == 1:
+            self.image = load_image("block_grass.png")
+            self.image = pygame.transform.scale(self.image, (W, H))
+        else:
+            self.image = load_image("block_dirt.png")
+            self.image = pygame.transform.scale(self.image, (W, H))
+        self.rect = Rect(x, y, W, H)
+
+
+class Platforms1(sprite.Sprite):
     def __init__(self, x, y, W, H, color):
         sprite.Sprite.__init__(self)
-        self.image = load_image("block_grass.png")
+        self.image = load_image("block_dirt.png")
         self.image = pygame.transform.scale(self.image, (W, H))
         self.rect = Rect(x, y, W, H)
         

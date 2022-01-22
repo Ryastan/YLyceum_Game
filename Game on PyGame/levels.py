@@ -3,6 +3,7 @@ from pygame import *
 from hero import Hero
 from portal import Portal
 from blocks import Platforms
+from blocks import Platforms1
 from booster import coal
 import os
 import sys
@@ -22,26 +23,7 @@ def load_image(name, colorkey=None):
 
 class Levels:
     def __init__(self):
-        self.level1 = ["-------------------------",
-                        "-                       -",
-                        "-                       -",
-                        "-                       -",
-                        "-            --         -",
-                        "-                       -",
-                        "--                      -",
-                        "-                       -",
-                        "-                   --- -",
-                        "-                       -",
-                        "-                       -",
-                        "-      ---              -",
-                        "-                       -",
-                        "-   -----------        -",
-                        "-                       -",
-                        "-                -      -",
-                        "-                   --  -",
-                        "-                       -",
-                        "-                       -",
-                        "-------------------------"]
+        pass
 
     def load(self, W, H, number):
         clock = pygame.time.Clock()
@@ -72,25 +54,25 @@ class Levels:
         bentities.add(backgr)
 
         level1 = ["-------------------------",
-                  "-                       -",
-                  "-                       -",
-                  "-                       -",
-                  "-            -- ------- -",
-                  "-                       -",
-                  "--                      -",
-                  "-                       -",
-                  "-                       -",
-                  "-                       -",
-                  "-                       -",
-                  "-      ---              -",
-                  "-                       -",
-                  "-                       -",
-                  "-                       -",
-                  "-   -------      -      -",
-                  "-                       -",
-                  "-             -----------",
-                  "-                       -",
-                  "-------------------------"]
+                  "0                       0",
+                  "0                       0",
+                  "0                       0",
+                  "0            -- ----33-00",
+                  "0                       0",
+                  "00                      0",
+                  "0                       0",
+                  "0       1               0",
+                  "0                       0",
+                  "0                       0",
+                  "0      ---              0",
+                  "0                       0",
+                  "0                       0",
+                  "0                       0",
+                  "0   -------      -      0",
+                  "0                       0",
+                  "0             ----------0",
+                  "0                       0",
+                  "0-----------------------0"]
         #entities.add(hero)
         surface = pygame.display.set_mode((W, H))
         pygame.display.set_caption('Game')
@@ -103,12 +85,19 @@ class Levels:
         for row in level1:
             for col in row:
                 if col == "-":
-                    platform = Platforms(x, y, W // 25, H // 20, GREEN)
+                    platform = Platforms(x, y, W // 25, H // 20, 1)
                     entities.add(platform)
                     platforms.append(platform)
                 if col == "1":
-                    c = coal(BLACK)
-                    entities.add(c)
+                    platform = coal(x, y)
+                    entities.add(platform)
+                if col == "0":
+                    platform = Platforms(x, y, W // 25, H // 20, 0)
+                    entities.add(platform)
+                    platforms.append(platform)
+                if col == "3":
+                    platform = Platforms1(x, y, W // 25, H // 20, 0)
+                    entities.add(platform)
                 x += W // 25
             y += H // 20
             x = 0
