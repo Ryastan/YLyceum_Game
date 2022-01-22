@@ -38,6 +38,7 @@ class Levels:
         left = False
         right = False
         up = False
+        shift = False
         hero = Hero(550, 550)  # Класс героя
         entities = pygame.sprite.Group()  # Все объекты
 
@@ -113,6 +114,8 @@ class Levels:
                         right = True
                     elif event.key == K_UP:
                         up = True
+                    elif event.key == K_LSHIFT:
+                        shift = True
                 elif event.type == KEYUP:
                     if event.key == K_LEFT:
                         left = False
@@ -120,8 +123,14 @@ class Levels:
                         right = False
                     elif event.key == K_UP:
                         up = False
+                    elif event.key == K_LSHIFT:
+                        shift = False
             if hero.condition == 6 and hero.time < -100:
                 run_game = False
+
+            if hero.shift_used > 0:
+                hero.shift_used -= 1
+                hero.y_speed = 0
 
 
             surface.blit(bg, (0, 0))
@@ -129,7 +138,7 @@ class Levels:
             if timing == 3:
                 hero.anim_time += 1
                 timing = 0
-            hero.update(left, right, up, platforms)  # передвижение
+            hero.update(left, right, up, shift, platforms)  # передвижение
             surface.blit(hero.image, (hero.rect.centerx - 75, hero.rect.centery - 60))
             entities.draw(surface)
             bentities.draw(bg)
@@ -194,4 +203,4 @@ class Levels:
 
             pygame.display.update()
             pygame.display.flip()
-            clock.tick(60)
+            clock.tick(FPS)

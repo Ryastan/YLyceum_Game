@@ -36,8 +36,9 @@ class Hero(sprite.Sprite):
         self.ground = False
         self.jump_power = 5
         self.gravity = 0.30
+        self.shift_used = 0
 
-    def update(self,  left, right, up, platforms):
+    def update(self,  left, right, up, shift, platforms):
         if self.time < 1 and self.condition != 6:
             self.condition = 5
             self.live = 0
@@ -74,7 +75,11 @@ class Hero(sprite.Sprite):
 
 
         if not(left or right) and self.live == 1:
-            self.x_speed = 0
+            if self.x_speed > 0:
+                self.x_speed -= 1
+            if self.x_speed < 0:
+                self.x_speed += 1
+
             if self.condition == 1 or self.condition == 2:
                 self.condition = 2
                 if self.anim_time > 11:
@@ -91,6 +96,15 @@ class Hero(sprite.Sprite):
                 self.image = pygame.transform.flip(self.image, True, False)
         if not self.ground:
             self.y_speed += self.gravity
+
+        if shift and self.live == 1 and self.shift_used == 0:
+            self.shift_used = 100
+
+        if self.shift_used > 80 and self.prev_cond == 1:
+            self.x_speed = 21
+
+        if self.shift_used > 80 and self.prev_cond == 3:
+            self.x_speed = -21
 
         if self.condition == 5:
             print(self.anim_time, "//")
