@@ -58,10 +58,9 @@ class Levels:
         up = False
         hero = Hero(550, 550)  # Класс героя
         entities = pygame.sprite.Group()  # Все объекты
-        platforms = []  # Все Платформы
-        entities.add(hero)
-        bentities = pygame.sprite.Group()  # Обьекты заднего плана
 
+        platforms = []  # Все Платформы
+        bentities = pygame.sprite.Group()  # Обьекты заднего плана
         class backg(pygame.sprite.Sprite):
             def __init__(self):
                 super().__init__(bentities)
@@ -92,11 +91,12 @@ class Levels:
                   "-             -----------",
                   "-                       -",
                   "-------------------------"]
-
+        #entities.add(hero)
         surface = pygame.display.set_mode((W, H))
         pygame.display.set_caption('Game')
         run_game = True
         bg = Surface((W, H))
+        he = Surface((150, 150))
         bentities.draw(bg)
         x = 0
         y = 0
@@ -112,7 +112,7 @@ class Levels:
                 x += W // 25
             y += H // 20
             x = 0
-
+        timing = 0
         while run_game:  # Главный цикл игры
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -133,9 +133,15 @@ class Levels:
                         up = False
             if hero.live == 0:
                 run_game = False
-            surface.blit(bg, (0, 0))
 
+
+            surface.blit(bg, (0, 0))
+            timing += 1
+            if timing == 3:
+                hero.anim_time += 1
+                timing = 0
             hero.update(left, right, up, platforms)  # передвижение
+            surface.blit(hero.image, (hero.rect.centerx - 75, hero.rect.centery - 60))
             entities.draw(surface)
             bentities.draw(bg)
             hero.time -= 1
