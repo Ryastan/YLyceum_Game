@@ -45,11 +45,11 @@ class Hero(sprite.Sprite):
                 self.y_speed = -self.jump_power
 
         if left:
-            if self.condition != 1:
+            if self.condition != 3:
                 self.anim_time = 0
             if self.anim_time > 11:
                 self.anim_time = 0
-            self.condition = 1
+            self.condition = 3
             self.x_speed = MOVE_SPEED # Право = x + n
             self.image = load_image("Walking\Moving Forward_0" + str(self.anim_time) + ".png")
             print(self.anim_time, "//")
@@ -71,8 +71,20 @@ class Hero(sprite.Sprite):
 
         if not(left or right):
             self.x_speed = 0
-            self.condition = 0
+            if self.condition == 1 or self.condition == 2:
+                self.condition = 2
+                if self.anim_time > 11:
+                    self.anim_time = 0
 
+                self.image = load_image("Walking\Moving Forward_0" + str(self.anim_time) + ".png")
+                self.image = pygame.transform.scale(self.image, (WIDTH, HEIGHT))
+            else:
+                self.condition = 4
+                if self.anim_time > 11:
+                    self.anim_time = 0
+                self.image = load_image("Walking\Moving Forward_0" + str(self.anim_time) + ".png")
+                self.image = pygame.transform.scale(self.image, (WIDTH, HEIGHT))
+                self.image = pygame.transform.flip(self.image, True, False)
         if not self.ground:
             self.y_speed += self.gravity
         
