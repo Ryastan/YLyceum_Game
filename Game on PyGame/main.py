@@ -19,8 +19,8 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
 level = Levels()
-level1 = Levels()
-level.load_menu(W, H)
-level1.load(W, H, 1)
-
-pygame.quit()
+if level.load_menu(W, H) == "Yes":
+    level1 = Levels()
+    level1.load(W, H, 1)
+else:
+    pygame.quit()

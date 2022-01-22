@@ -34,19 +34,25 @@ class Hero(sprite.Sprite):
         self.rect = Rect(x, y, WIDTH-100, HEIGHT - 40)
         self.y_speed = 0 # скорость вертикального перемещения
         self.ground = False
-        self.jump_power = 5
+        self.jump_power = 8
         self.gravity = 0.30
         self.shift_used = 0
+        self.extra_jump = 0
 
-    def update(self,  left, right, up, shift, platforms):
+    def update(self,  left, right, up, shift, platforms, crystals):
+        print(self.y_speed, "///////")
         if self.time < 1 and self.condition != 6:
             self.condition = 5
             self.live = 0
             self.anim_time = 0
             self.time = 110
         if up and self.live == 1:
-            if self.ground:
+            if self.y_speed < 1:
                 self.y_speed = -self.jump_power
+            if self.extra_jump > 0:
+                self.y_speed = -self.jump_power
+                self.extra_jump = 0
+
 
         if left and self.live == 1:
             if self.condition != 3:
@@ -123,19 +129,19 @@ class Hero(sprite.Sprite):
             self.kill()
 
 
-        self.ground = False  
+        self.ground = False
 
         self.rect.y += self.y_speed
-        self.collision_check(0, self.y_speed, platforms)
+        self.collision_check(0, self.y_speed, platforms, crystals)
 
         self.rect.x += self.x_speed
-        self.collision_check(self.x_speed, 0, platforms)
+        self.collision_check(self.x_speed, 0, platforms, crystals)
 
         self.rect.y += self.y_speed
 
 
     
-    def collision_check(self, x_speed, y_speed, platforms):
+    def collision_check(self, x_speed, y_speed, platforms, crystals):
         for platform in platforms:
             if sprite.collide_rect(self, platform):
 
@@ -152,4 +158,10 @@ class Hero(sprite.Sprite):
 
                 if y_speed < 0:  
                     self.rect.top = platform.rect.bottom 
-                    self.y_speed = 0   
+                    self.y_speed = 0
+
+        for crystal in crystals:
+            if sprite.collide_rect(self, crystal):
+                self.time = 15 * 60
+                self.extra_jump = 150
+                crystal.kill()

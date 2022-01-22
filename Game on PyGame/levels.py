@@ -39,9 +39,10 @@ class Levels:
         right = False
         up = False
         shift = False
-        hero = Hero(550, 550)  # Класс героя
+        prev_up = False
+        hero = Hero(100, 900)  # Класс героя
         entities = pygame.sprite.Group()  # Все объекты
-
+        crstals = pygame.sprite.Group() #Бустовые кристаллы
         platforms = []  # Все Платформы
         bentities = pygame.sprite.Group()  # Обьекты заднего плана
         class backg(pygame.sprite.Sprite):
@@ -58,7 +59,7 @@ class Levels:
                   "0                       0",
                   "0                       0",
                   "0                       0",
-                  "0            -- ----33-00",
+                  "0       1    -- ----33-00",
                   "0                       0",
                   "00                      0",
                   "0                       0",
@@ -66,10 +67,10 @@ class Levels:
                   "0                       0",
                   "0                       0",
                   "0      ---              0",
+                  "0   1                   0",
                   "0                       0",
                   "0                       0",
-                  "0                       0",
-                  "0   -------      -      0",
+                  "0 1 -------      -      0",
                   "0                       0",
                   "0             ----------0",
                   "0                       0",
@@ -79,7 +80,6 @@ class Levels:
         pygame.display.set_caption('Game')
         run_game = True
         bg = Surface((W, H))
-        he = Surface((150, 150))
         bentities.draw(bg)
         x = 0
         y = 0
@@ -92,6 +92,7 @@ class Levels:
                 if col == "1":
                     platform = coal(x, y)
                     entities.add(platform)
+                    crstals.add(platform)
                 if col == "0":
                     platform = Platforms(x, y, W // 25, H // 20, 0)
                     entities.add(platform)
@@ -104,6 +105,7 @@ class Levels:
             x = 0
         timing = 0
         while run_game:  # Главный цикл игры
+            up = False
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run_game = False
@@ -122,7 +124,9 @@ class Levels:
                     elif event.key == K_RIGHT:
                         right = False
                     elif event.key == K_UP:
+                        print("DOWN")
                         up = False
+                        prev_up = False
                     elif event.key == K_LSHIFT:
                         shift = False
             if hero.condition == 6 and hero.time < -100:
@@ -130,7 +134,12 @@ class Levels:
 
             if hero.shift_used > 0:
                 hero.shift_used -= 1
+
+            if hero.shift_used > 80:
                 hero.y_speed = 0
+
+            if hero.extra_jump > 0:
+                hero.extra_jump -= 1
 
 
             surface.blit(bg, (0, 0))
@@ -138,15 +147,14 @@ class Levels:
             if timing == 3:
                 hero.anim_time += 1
                 timing = 0
-            hero.update(left, right, up, shift, platforms)  # передвижение
+            hero.update(left, right, up, shift, platforms, crstals)  # передвижение
             surface.blit(hero.image, (hero.rect.centerx - 75, hero.rect.centery - 60))
             entities.draw(surface)
             bentities.draw(bg)
             hero.time -= 1
             pygame.display.update()
             pygame.display.flip()
-            print(hero.time)
-            clock.tick(60)
+            clock.tick(FPS)
 
 
     def load_menu(self, W, H):
@@ -154,11 +162,7 @@ class Levels:
         FPS = 60  # ФПС игры
 
         # Цвета в RGB
-        WHITE = (255, 255, 255)
-        BLACK = (0, 0, 0)
         RED = (255, 0, 0)
-        GREEN = (0, 255, 0)
-        BLUE = (0, 0, 255)
         entities = pygame.sprite.Group()  # Все объекты
         backentities = pygame.sprite.Group()
         surface = pygame.display.set_mode((W, H))
@@ -195,8 +199,10 @@ class Levels:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run_game = False
+                    return "No"
                 if event.type == KEYDOWN:
                     run_game = False
+                    return "Yes"
             backentities.draw(bg)
             entities.draw(surface)
             surface.blit(bg, (0, 0))
