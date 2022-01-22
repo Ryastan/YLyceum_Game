@@ -33,18 +33,20 @@ class Hero(sprite.Sprite):
         self.rect = Rect(x, y, WIDTH-100, HEIGHT - 40)
         self.y_speed = 0 # скорость вертикального перемещения
         self.ground = False
-        self.jump_power = 10
+        self.jump_power = 5
         self.gravity = 0.30
 
     def update(self,  left, right, up, platforms):
-        if self.time < 1:
-            self.kill()
+        if self.time < 1 and self.condition != 6:
+            self.condition = 5
             self.live = 0
-        if up:
+            self.anim_time = 0
+            self.time = 110
+        if up and self.live == 1:
             if self.ground:
                 self.y_speed = -self.jump_power
 
-        if left:
+        if left and self.live == 1:
             if self.condition != 3:
                 self.anim_time = 0
             if self.anim_time > 11:
@@ -57,7 +59,7 @@ class Hero(sprite.Sprite):
             self.image = pygame.transform.flip(self.image, True, False)
             self.x_speed = -MOVE_SPEED # Лево = x- n
 
-        if right:
+        if right and self.live == 1:
             if self.condition != 1:
                 self.anim_time = 0
             if self.anim_time > 11:
@@ -69,7 +71,7 @@ class Hero(sprite.Sprite):
             self.image = pygame.transform.scale(self.image, (WIDTH, HEIGHT))
 
 
-        if not(left or right):
+        if not(left or right) and self.live == 1:
             self.x_speed = 0
             if self.condition == 1 or self.condition == 2:
                 self.condition = 2
@@ -87,7 +89,22 @@ class Hero(sprite.Sprite):
                 self.image = pygame.transform.flip(self.image, True, False)
         if not self.ground:
             self.y_speed += self.gravity
-        
+
+        if self.condition == 5:
+            print(self.anim_time, "//")
+            if self.anim_time == 14:
+                self.kill()
+                self.anim_time = 0
+                self.condition = 6
+            self.x_speed = 0
+            self.image = load_image("Dying\Dying_0" + str(self.anim_time) + ".png")
+            self.image = pygame.transform.scale(self.image, (WIDTH, HEIGHT))
+
+        if self.condition == 6:
+            self.image = Surface((0, 0))
+            self.kill()
+
+
         self.ground = False  
 
         self.rect.y += self.y_speed
@@ -97,6 +114,8 @@ class Hero(sprite.Sprite):
         self.collision_check(self.x_speed, 0, platforms)
 
         self.rect.y += self.y_speed
+
+
     
     def collision_check(self, x_speed, y_speed, platforms):
         for platform in platforms:
