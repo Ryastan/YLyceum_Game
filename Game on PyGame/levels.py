@@ -120,7 +120,7 @@ class Levels:
                         right = False
                     elif event.key == K_UP:
                         up = False
-            if hero.live == 2:
+            if hero.condition == 6 and hero.time < -100:
                 run_game = False
 
 

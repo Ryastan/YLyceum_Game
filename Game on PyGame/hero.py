@@ -23,6 +23,7 @@ class Hero(sprite.Sprite):
         sprite.Sprite.__init__(self)
         self.time = 15 * 60
         self.condition = 0
+        self.prev_cond = 0
         self.anim_time = 0
         self.live = 1
         self.x_speed = 0   #скорость перемещения
@@ -58,6 +59,7 @@ class Hero(sprite.Sprite):
             self.image = pygame.transform.scale(self.image, (WIDTH, HEIGHT))
             self.image = pygame.transform.flip(self.image, True, False)
             self.x_speed = -MOVE_SPEED # Лево = x- n
+            self.prev_cond = 3
 
         if right and self.live == 1:
             if self.condition != 1:
@@ -65,9 +67,9 @@ class Hero(sprite.Sprite):
             if self.anim_time > 11:
                 self.anim_time = 0
             self.condition = 1
+            self.prev_cond = 1
             self.x_speed = MOVE_SPEED # Право = x + n
             self.image = load_image("Walking\Moving Forward_0" + str(self.anim_time) + ".png")
-            print(self.anim_time, "//")
             self.image = pygame.transform.scale(self.image, (WIDTH, HEIGHT))
 
 
@@ -98,6 +100,8 @@ class Hero(sprite.Sprite):
                 self.condition = 6
             self.x_speed = 0
             self.image = load_image("Dying\Dying_0" + str(self.anim_time) + ".png")
+            if self.prev_cond == 3:
+                self.image = pygame.transform.flip(self.image, True, False)
             self.image = pygame.transform.scale(self.image, (WIDTH, HEIGHT))
 
         if self.condition == 6:
