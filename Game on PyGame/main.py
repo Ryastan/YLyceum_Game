@@ -17,7 +17,8 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
-
+#1500 / 25 = 60
+#1000 / 20 = 50 Стандарт размеров блоков
 level = Levels()
 if level.load_menu(W, H) == "Yes":
     level1 = Levels()

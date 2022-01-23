@@ -5,6 +5,7 @@ from portal import Portal
 from blocks import Platforms
 from blocks import Platforms1
 from booster import coal
+from booster import spike
 import os
 import sys
 
@@ -45,6 +46,7 @@ class Levels:
         crstals = pygame.sprite.Group() #Бустовые кристаллы
         platforms = []  # Все Платформы
         bentities = pygame.sprite.Group()  # Обьекты заднего плана
+        enemies = pygame.sprite.Group()
         class backg(pygame.sprite.Sprite):
             def __init__(self):
                 super().__init__(bentities)
@@ -55,13 +57,13 @@ class Levels:
         backgr = backg()
         bentities.add(backgr)
 
-        level1 = ["-------------------------",
+        level1 = ["                         ",
                   "0                       0",
                   "0                       0",
-                  "0                       0",
+                  "0 33                    0",
                   "0       1    -- ----33-00",
-                  "0                       0",
-                  "00                      0",
+                  "0                   44  0",
+                  "00                  000 0",
                   "0                       0",
                   "0       1               0",
                   "0                       0",
@@ -71,7 +73,7 @@ class Levels:
                   "0                       0",
                   "0                       0",
                   "0 1 -------      -      0",
-                  "0                       0",
+                  "0             44        0",
                   "0             ----------0",
                   "0                       0",
                   "0-----------------------0"]
@@ -100,6 +102,10 @@ class Levels:
                 if col == "3":
                     platform = Platforms1(x, y, W // 25, H // 20, 0)
                     entities.add(platform)
+                if col == "4":
+                    platform = spike(x, y)
+                    entities.add(platform)
+                    enemies.add(platform)
                 x += W // 25
             y += H // 20
             x = 0
@@ -147,7 +153,7 @@ class Levels:
             if timing == 3:
                 hero.anim_time += 1
                 timing = 0
-            hero.update(left, right, up, shift, platforms, crstals)  # передвижение
+            hero.update(left, right, up, shift, platforms, crstals, enemies)  # передвижение
             surface.blit(hero.image, (hero.rect.centerx - 75, hero.rect.centery - 60))
             entities.draw(surface)
             bentities.draw(bg)

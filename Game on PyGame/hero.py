@@ -34,12 +34,12 @@ class Hero(sprite.Sprite):
         self.rect = Rect(x, y, WIDTH-100, HEIGHT - 40)
         self.y_speed = 0 # скорость вертикального перемещения
         self.ground = False
-        self.jump_power = 8
+        self.jump_power = 6
         self.gravity = 0.30
         self.shift_used = 0
         self.extra_jump = 0
 
-    def update(self,  left, right, up, shift, platforms, crystals):
+    def update(self,  left, right, up, shift, platforms, crystals, enemies):
         print(self.y_speed, "///////")
         if self.time < 1 and self.condition != 6:
             self.condition = 5
@@ -132,16 +132,16 @@ class Hero(sprite.Sprite):
         self.ground = False
 
         self.rect.y += self.y_speed
-        self.collision_check(0, self.y_speed, platforms, crystals)
+        self.collision_check(0, self.y_speed, platforms, crystals, enemies)
 
         self.rect.x += self.x_speed
-        self.collision_check(self.x_speed, 0, platforms, crystals)
+        self.collision_check(self.x_speed, 0, platforms, crystals, enemies)
 
         self.rect.y += self.y_speed
 
 
     
-    def collision_check(self, x_speed, y_speed, platforms, crystals):
+    def collision_check(self, x_speed, y_speed, platforms, crystals, enemies):
         for platform in platforms:
             if sprite.collide_rect(self, platform):
 
@@ -163,5 +163,12 @@ class Hero(sprite.Sprite):
         for crystal in crystals:
             if sprite.collide_rect(self, crystal):
                 self.time = 15 * 60
-                self.extra_jump = 150
+                self.extra_jump = 50
                 crystal.kill()
+
+        for enemie in enemies:
+            if sprite.collide_rect(self, enemie) and self.live == 1:
+                self.condition = 5
+                self.live = 0
+                self.anim_time = 0
+                self.time = 110
