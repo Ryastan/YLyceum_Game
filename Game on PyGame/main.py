@@ -22,6 +22,9 @@ BLUE = (0, 0, 255)
 level = Levels()
 if level.load_menu(W, H) == "Yes":
     level1 = Levels()
-    level1.load(W, H, 1)
+    if level1.load(W, H, 1) == "Yes":
+        level1 = Levels()
+        if level1.load(W, H, 2) == "Yes":
+            pygame.quit()
 else:
     pygame.quit()

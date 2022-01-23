@@ -6,6 +6,8 @@ from blocks import Platforms
 from blocks import Platforms1
 from booster import coal
 from booster import spike
+from booster import enter
+from booster import exit
 import os
 import sys
 
@@ -40,13 +42,15 @@ class Levels:
         right = False
         up = False
         shift = False
-        prev_up = False
+        counter = 0
+        counter1 = 0
         hero = Hero(100, 900)  # Класс героя
         entities = pygame.sprite.Group()  # Все объекты
         crstals = pygame.sprite.Group() #Бустовые кристаллы
         platforms = []  # Все Платформы
         bentities = pygame.sprite.Group()  # Обьекты заднего плана
         enemies = pygame.sprite.Group()
+        black = Surface((W, H))
         class backg(pygame.sprite.Sprite):
             def __init__(self):
                 super().__init__(bentities)
@@ -56,28 +60,48 @@ class Levels:
                 self.rect.y = 0
         backgr = backg()
         bentities.add(backgr)
-
-        level1 = ["                         ",
-                  "0                       0",
-                  "0                       0",
-                  "0 33                    0",
-                  "0       1    -- ----33-00",
-                  "0                   44  0",
-                  "00                  000 0",
-                  "0                       0",
-                  "0       1               0",
-                  "0                       0",
-                  "0                       0",
-                  "0      ---              0",
-                  "0   1                   0",
-                  "0                       0",
-                  "0                       0",
-                  "0 1 -------      -      0",
-                  "0             44        0",
-                  "0             ----------0",
-                  "0                       0",
-                  "0-----------------------0"]
-        #entities.add(hero)
+        if number == 1:
+            level1 = ["                         ",
+                     "0                       0",
+                     "0                       0",
+                     "0 33                    0",
+                     "0       1    -- ----33-00",
+                     "0                   44  0",
+                     "00                  000 0",
+                     "0                       0",
+                     "0       1               0",
+                     "0                       0",
+                     "0                       0",
+                     "0      ---              0",
+                     "0   1                   0",
+                     "0                       0",
+                     "0                       0",
+                     "0 1 -------      -    6 0",
+                     "0             44        0",
+                     "05            ----------0",
+                     "0                       0",
+                     "0-----------------------0"]
+        if number == 2:
+            level1 = ["                         ",
+                     "0                       0",
+                     "0                       0",
+                     "0 33                    0",
+                     "0       1    -- ----33-00",
+                     "0                   44  0",
+                     "00      1           000 0",
+                     "0                       0",
+                     "0       1         1     0",
+                     "0                       0",
+                     "0                       0",
+                     "0      ---              0",
+                     "0   1                   0",
+                     "0                  1    0",
+                     "0                       0",
+                     "0 1 -------      -    6 0",
+                     "0             44        0",
+                     "05            ----------0",
+                     "0                       0",
+                     "0-----------------------0"]
         surface = pygame.display.set_mode((W, H))
         pygame.display.set_caption('Game')
         run_game = True
@@ -106,6 +130,12 @@ class Levels:
                     platform = spike(x, y)
                     entities.add(platform)
                     enemies.add(platform)
+                if col == "5":
+                    platform = enter(x, y)
+                    entities.add(platform)
+                if col == "6":
+                    self.exit1 = exit(x, y)
+                    entities.add(self.exit1)
                 x += W // 25
             y += H // 20
             x = 0
@@ -130,7 +160,6 @@ class Levels:
                     elif event.key == K_RIGHT:
                         right = False
                     elif event.key == K_UP:
-                        print("DOWN")
                         up = False
                         prev_up = False
                     elif event.key == K_LSHIFT:
@@ -146,20 +175,29 @@ class Levels:
 
             if hero.extra_jump > 0:
                 hero.extra_jump -= 1
-
-
             surface.blit(bg, (0, 0))
             timing += 1
             if timing == 3:
                 hero.anim_time += 1
                 timing = 0
-            hero.update(left, right, up, shift, platforms, crstals, enemies)  # передвижение
+            hero.update(left, right, up, shift, platforms, crstals, enemies, self.exit1)  # передвижение
             surface.blit(hero.image, (hero.rect.centerx - 75, hero.rect.centery - 60))
             entities.draw(surface)
             bentities.draw(bg)
             hero.time -= 1
+            if counter < 50:
+                surface.blit(black, (0, counter * 20))
+            if hero.condition == 7 and counter1 < 1:
+                counter1 = 50
+            if counter1 > 0:
+                print(counter1)
+                surface.blit(black, (0, counter1 * 20))
+                counter1 -= 1
+            if counter1 == 1:
+                return "Yes"
             pygame.display.update()
             pygame.display.flip()
+            counter += 1
             clock.tick(FPS)
 
 
