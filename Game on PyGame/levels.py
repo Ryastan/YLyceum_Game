@@ -8,6 +8,39 @@ from booster import coal
 import os
 import sys
 
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+
+
+class Button:
+            def __init__(self, surf, W, H, active_color=WHITE, inactive_color=BLACK):
+                self.surface = surf
+                self.W = W
+                self.H = H
+                self.inactive_color = inactive_color
+                self.active_color = active_color
+            
+            def draw(self, x, y, title, action=None, W=None, H=None):
+                mouse = pygame.mouse.get_pos()
+                clicked = pygame.mouse.get_pressed()
+
+                if x < mouse[0] < x + self.W:
+                    if y < mouse[1] < y + self.H:
+                        pygame.draw.rect(self.surface, (RED), (x, y, self.W, self.H))
+                        if clicked[0] and action is not None:
+                            if W is not None and H is not None:
+                                action(W, H)
+                            else:
+                                action()
+                    else:
+                        pygame.draw.rect(self.surface, (WHITE), (x, y, self.W, self.H))
+                else:
+                    pygame.draw.rect(self.surface, (WHITE), (x, y, self.W, self.H))
+
+                print_text(self.surface, title, x+5, y+5)
+
+
 def load_image(name, colorkey=None):
     fullname = os.path.join("sprites",name)
     # если файл не существует, то выходим
@@ -17,13 +50,52 @@ def load_image(name, colorkey=None):
     image = pygame.image.load(fullname)
     return image
 
+def print_text(surface, message, x, y, font_color=(0, 0, 255), font_type='fonts/Elfboyclassic.ttf', font_size=50):
+    pygame.font.init()    
+    font_type = pygame.font.Font(font_type, font_size)
+    text = font_type.render(message, True, font_color)
+    surface.blit(text, (x, y))
 
+def start_game(W, H):
+    pygame.quit()
+    level = Levels()
+    level.load(W, H, 1)
 
+def stop_game():
+    sys.exit()
 
+def to_menu(W, H):
+    pygame.quit()
+    level = Levels()
+    level.load_menu(W, H)
+    
 
 class Levels:
     def __init__(self):
-        pass
+        self.level1 = ["-------------------------",
+                       "0                       0",
+                       "0                       0",
+                       "0                       0",
+                       "0            -- ----33-00",
+                       "0       1    -- ----33-00",
+                       "0                       0",
+                       "00                      0",
+                       "0                       0",
+                       "0       1               0",
+                       "0                       0",
+                       "0                       0",
+                       "0      ---              0",
+                       "0   1                   0",
+                       "0                       0",
+                       "0                       0",
+                       "0                       0",
+                       "0   -------      -      0",
+                       "0 1 -------      -      0",
+                       "0                       0",
+                       "0             ----------0",
+                       "0                       0",
+                       "0-----------------------0"]
+        print(len(self.level1), len(self.level1[0]))
 
     def load(self, W, H, number):
         clock = pygame.time.Clock()
@@ -55,38 +127,21 @@ class Levels:
         backgr = backg()
         bentities.add(backgr)
 
-        level1 = ["-------------------------",
-                  "0                       0",
-                  "0                       0",
-                  "0                       0",
-                  "0       1    -- ----33-00",
-                  "0                       0",
-                  "00                      0",
-                  "0                       0",
-                  "0       1               0",
-                  "0                       0",
-                  "0                       0",
-                  "0      ---              0",
-                  "0   1                   0",
-                  "0                       0",
-                  "0                       0",
-                  "0 1 -------      -      0",
-                  "0                       0",
-                  "0             ----------0",
-                  "0                       0",
-                  "0-----------------------0"]
-        #entities.add(hero)
+
         surface = pygame.display.set_mode((W, H))
         pygame.display.set_caption('Game')
         run_game = True
         bg = Surface((W, H))
         bentities.draw(bg)
+        died = False
         x = 0
         y = 0
-        for row in level1:
+        btn_died_restart = Button(surface, 250, 50)
+        btn_died_menu = Button(surface, 250, 50)
+        for row in self.level1:
             for col in row:
                 if col == "-":
-                    platform = Platforms(x, y, W // 25, H // 20, 1)
+                    platform = Platforms(x, y, W // len(self.level1[0]), H // len(self.level1), 1)
                     entities.add(platform)
                     platforms.append(platform)
                 if col == "1":
@@ -94,14 +149,14 @@ class Levels:
                     entities.add(platform)
                     crstals.add(platform)
                 if col == "0":
-                    platform = Platforms(x, y, W // 25, H // 20, 0)
+                    platform = Platforms(x, y, W // len(self.level1[0]), H // len(self.level1), 0)
                     entities.add(platform)
                     platforms.append(platform)
                 if col == "3":
-                    platform = Platforms1(x, y, W // 25, H // 20, 0)
+                    platform = Platforms1(x, y, W // len(self.level1[0]), H // len(self.level1), 0)
                     entities.add(platform)
-                x += W // 25
-            y += H // 20
+                x += W // len(self.level1[0])
+            y += H // len(self.level1)
             x = 0
         timing = 0
         while run_game:  # Главный цикл игры
@@ -130,7 +185,7 @@ class Levels:
                     elif event.key == K_LSHIFT:
                         shift = False
             if hero.condition == 6 and hero.time < -100:
-                run_game = False
+                died = True
 
             if hero.shift_used > 0:
                 hero.shift_used -= 1
@@ -151,11 +206,14 @@ class Levels:
             surface.blit(hero.image, (hero.rect.centerx - 75, hero.rect.centery - 60))
             entities.draw(surface)
             bentities.draw(bg)
+            if died:
+                btn_died_restart.draw(600, 500, 'RESTART', start_game, W, H)
+                btn_died_menu.draw(600, 555, 'MAIN MENU', to_menu, W, H)
+                print_text(surface, 'YOU DIED', 630, 450)
             hero.time -= 1
             pygame.display.update()
             pygame.display.flip()
             clock.tick(FPS)
-
 
     def load_menu(self, W, H):
         clock = pygame.time.Clock()
@@ -163,6 +221,8 @@ class Levels:
 
         # Цвета в RGB
         RED = (255, 0, 0)
+        WHITE = (255, 255, 255)
+        BLACK = (0, 0, 0)
         entities = pygame.sprite.Group()  # Все объекты
         backentities = pygame.sprite.Group()
         surface = pygame.display.set_mode((W, H))
@@ -179,6 +239,8 @@ class Levels:
                 self.rect = self.image.get_rect()
                 self.rect.x = 0
                 self.rect.y = 0
+
+        
         class textm(pygame.sprite.Sprite):
             def __init__(self, posx, posy):
                 super().__init__(entities)
@@ -190,6 +252,8 @@ class Levels:
 
         text_in_m = textm(3, 300)
         back_ground_menu = backg()
+        button_start = Button(surface, 250, 50)
+        button_quit = Button(surface, 150, 50)
 
         backentities.add(text_in_m)
         entities.add(back_ground_menu)
@@ -199,13 +263,13 @@ class Levels:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run_game = False
-                    return "No"
                 if event.type == KEYDOWN:
                     run_game = False
-                    return "Yes"
             backentities.draw(bg)
             entities.draw(surface)
             surface.blit(bg, (0, 0))
+            button_start.draw(100, 800, 'Start Game', start_game, W, H)
+            button_quit.draw(1200, 800, 'Quit', stop_game)
 
             pygame.display.update()
             pygame.display.flip()
