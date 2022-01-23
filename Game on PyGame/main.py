@@ -25,6 +25,14 @@ if level.load_menu(W, H) == "Yes":
     if level1.load(W, H, 1) == "Yes":
         level1 = Levels()
         if level1.load(W, H, 2) == "Yes":
-            pygame.quit()
+            level1 = Levels()
+            if level.load(W, H, 3) == "Yes":
+                level1 = Levels()
+                if level.load(W, H, 4) == "Yes":
+                    level1 = Levels()
+                    if level.load(W, H, 5) == "Yes":
+                        level1 = Levels()
+                        if level.load(W, H, 6) == "Yes":
+                            pygame.quit()
 else:
     pygame.quit()
