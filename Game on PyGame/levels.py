@@ -166,12 +166,14 @@ class Levels:
     def load_menu(self, W, H):
         clock = pygame.time.Clock()
         FPS = 60  # ФПС игры
-
+        anim_timer = 0
         # Цвета в RGB
         RED = (255, 0, 0)
         entities = pygame.sprite.Group()  # Все объекты
         backentities = pygame.sprite.Group()
         surface = pygame.display.set_mode((W, H))
+        black = Surface((W, H))
+        black.fill((0, 0, 0))
         pygame.display.set_caption('Game')
         run_game = True
         bg = Surface((W, H))
@@ -192,27 +194,55 @@ class Levels:
                 self.rect = self.image.get_rect()
                 self.rect.x = posx
                 self.rect.y = posy
+        class text2(pygame.sprite.Sprite):
+            def __init__(self, posx, posy):
+                super().__init__(entities)
+                self.image = load_image("menu_new_game.png")
+                self.image = pygame.transform.scale(self.image, (1500, 75))
+                self.rect = self.image.get_rect()
+                self.rect.x = posx
+                self.rect.y = posy
 
+        class text3(pygame.sprite.Sprite):
+            def __init__(self, posx, posy):
+                super().__init__(entities)
+                self.image = load_image("escape.png")
+                self.image = pygame.transform.scale(self.image, (1500, 75))
+                self.rect = self.image.get_rect()
+                self.rect.x = posx
+                self.rect.y = posy
 
         text_in_m = textm(3, 300)
+        text_inm2 = text2(0, 550)
+        text_inm3 = text3(0, 700)
         back_ground_menu = backg()
 
         backentities.add(text_in_m)
+        backentities.add(text_inm2)
+        backentities.add(text_inm3)
         entities.add(back_ground_menu)
 
-
+        anim_timer = 0
         while run_game:  # Главный цикл игры
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run_game = False
                     return "No"
                 if event.type == KEYDOWN:
-                    run_game = False
-                    return "Yes"
+                    if event.key == K_ESCAPE:
+                        run_game = False
+                        return "No"
+                    elif event.key == K_RIGHT and anim_timer < 1:
+                        anim_timer = 1
             backentities.draw(bg)
             entities.draw(surface)
             surface.blit(bg, (0, 0))
-
+            print(anim_timer)
+            if anim_timer > 0:
+                anim_timer += 5
+                surface.blit(black, (0, H - anim_timer * 2))
+            if anim_timer > 500:
+                return "Yes"
             pygame.display.update()
             pygame.display.flip()
             clock.tick(FPS)
