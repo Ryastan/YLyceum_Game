@@ -31,3 +31,18 @@ class spike(sprite.Sprite):
         self.image = load_image("metal_spike.png")
         self.image = pygame.transform.scale(self.image, (60, 50))
         self.rect = Rect(x, y, 60, 50)
+
+
+class enter(sprite.Sprite):
+    def __init__(self, x, y):
+        sprite.Sprite.__init__(self)
+        self.image = load_image("portal_1.png")
+        self.image = pygame.transform.scale(self.image, (60, 100))
+        self.rect = Rect(x, y, 60, 100)
+
+class exit(sprite.Sprite):
+    def __init__(self, x, y):
+        sprite.Sprite.__init__(self)
+        self.image = load_image("portal_2.png")
+        self.image = pygame.transform.scale(self.image, (60, 100))
+        self.rect = Rect(x, y, 60, 100)
