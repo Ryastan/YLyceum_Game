@@ -1,7 +1,6 @@
 import pygame
 from pygame import *
 from hero import Hero
-from portal import Portal
 from blocks import Platforms
 from blocks import Platforms1
 from blocks import life_bar
@@ -31,9 +30,9 @@ class Levels:
     def __init__(self):
         self.sound_death = pygame.mixer.Sound("sounds/death_soul.wav")
         self.sound_picked_up = pygame.mixer.Sound("sounds/picked_crystall.wav")
-        self.sound_picked_up.set_volume(0.6)
+        self.sound_picked_up.set_volume(0.3)
         self.sound_walking = pygame.mixer.Sound("sounds/walking.wav")
-        self.sound_walking.set_volume(0.3)
+        self.sound_walking.set_volume(0.5)
         self.sound_portal_shift = pygame.mixer.Sound("sounds/portal_shift.wav")
         self.sound_portal_shift.set_volume(0.3)
         self.sound_phase_shift = pygame.mixer.Sound("sounds/phase_shift2.wav")
@@ -63,7 +62,7 @@ class Levels:
 
                     ["                         ",
                      "0                       0",
-                     "0                     6 0",
+                     "0                      60",
                      "0            --         0",
                      "0           --- --------0",
                      "0-                      0",
@@ -200,6 +199,8 @@ class Levels:
                 self.rect = self.image.get_rect()
                 self.rect.x = 0
                 self.rect.y = 0
+
+
         class text4(pygame.sprite.Sprite):
             def __init__(self, posx, posy):
                 super().__init__(entities)
@@ -208,6 +209,7 @@ class Levels:
                 self.rect = self.image.get_rect()
                 self.rect.x = posx
                 self.rect.y = posy
+        
 
         backgr = backg()
         bentities.add(backgr)
@@ -254,6 +256,7 @@ class Levels:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run_game = False
+                    sys.exit()
                 elif event.type == KEYDOWN:
                     if event.key == K_LEFT:
                         left = True
@@ -272,7 +275,7 @@ class Levels:
                     elif event.key == K_ESCAPE and dead:
                         self.load_menu(W, H)
                     elif event.key == K_LCTRL and dead:
-                        self.level = 1
+                        self.level = 0
                         self.load(W, H, self.level)
 
                 elif event.type == KEYUP:
@@ -319,7 +322,7 @@ class Levels:
             entities.draw(surface)
             bentities.draw(bg)
             if hero.live == 1:
-                surface.blit(pygame.transform.scale(lifea.image, (100 - hero.time // 9, 100 - hero.time // 9)), (750, 900))
+                surface.blit(pygame.transform.scale(lifea.image, (0 + hero.time // 9, 0 + hero.time // 9)), (750, 10))
             hero.time -= 1
             if counter < 50:
                 surface.blit(black, (0, counter * 20))
@@ -334,8 +337,10 @@ class Levels:
                 counter1 -= 1
             if counter1 == 1:
                 self.level += 1
-                if self.level < 5:
-                    self.load(W, H, self.level + 1)
+                if self.level <= 5:
+                    self.load(W, H, self.level)
+                else:
+                    self.load_win_screen(W, H)
             pygame.display.update()
             pygame.display.flip()
             counter += 1
@@ -343,6 +348,7 @@ class Levels:
 
     def load_menu(self, W, H):
         clock = pygame.time.Clock()
+        self.level = 0
         FPS = 60  # ФПС игры
         # Цвета в RGB
         RED = (255, 0, 0)
@@ -404,6 +410,7 @@ class Levels:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run_game = False
+                    sys.exit()
                 if event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
                         run_game = False
@@ -453,6 +460,7 @@ class Levels:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run_game = False
+                    sys.exit()
                 if event.type == KEYDOWN:
                     if event.key == K_TAB and anim_timer < 1:
                         anim_timer = 1
@@ -462,7 +470,51 @@ class Levels:
                 anim_timer += 5
                 surface.blit(black, (0, H - anim_timer * 2))
             if anim_timer > 500:
-                self.load(W, H, 0)
+                self.load(W, H, self.level)
+
+            pygame.display.update()
+            pygame.display.flip()
+            clock.tick(FPS)
+
+    def load_win_screen(self, W, H):
+        run_game = True
+        clock = pygame.time.Clock()
+        FPS = 60
+
+        surface = pygame.display.set_mode((W, H))
+        pygame.display.set_caption('WIN')
+        backentities = pygame.sprite.Group()
+        black = Surface((W, H))
+        black.fill((0, 0, 0))
+
+
+        class win(pygame.sprite.Sprite):
+            def __init__(self):
+                super().__init__(backentities)
+                self.image = load_image("win.png")
+                self.rect = self.image.get_rect()
+                self.rect.x = 0
+                self.rect.y = 0
+
+        # img_tutorial = tutorial
+        backentities.add(win())
+        anim_timer = 0
+
+        while run_game:  # Главный цикл игры
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run_game = False
+                    sys.exit()
+                if event.type == KEYDOWN:
+                    if event.key == K_ESCAPE and anim_timer < 1:
+                        anim_timer = 1
+            print(anim_timer)
+            backentities.draw(surface)
+            if anim_timer > 0:
+                anim_timer += 5
+                surface.blit(black, (0, H - anim_timer * 2))
+            if anim_timer > 500:
+                self.load_menu(W, H)
 
             pygame.display.update()
             pygame.display.flip()

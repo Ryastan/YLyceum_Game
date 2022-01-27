@@ -1,7 +1,6 @@
 import pygame
 from pygame import *
 from hero import Hero
-from portal import Portal
 from blocks import Platforms
 from blocks import Platforms1
 import os
