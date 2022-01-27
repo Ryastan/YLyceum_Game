@@ -2,12 +2,11 @@ from pygame import *
 import pygame
 import os
 import sys
+
 MOVE_SPEED = 7
 WIDTH = 150
 HEIGHT = 150
 COLOR =  "#888888"
-
-
 def load_image(name, colorkey=None):
     fullname = os.path.join("sprites\images\Hero",name)
     # если файл не существует, то выходим
@@ -39,6 +38,9 @@ class Hero(sprite.Sprite):
         self.shift_used = 0
         self.extra_jump = 0
         self.ground_time = 0
+        self.picked_up = False
+        self.walking = False
+        self.shift_sound = False
 
     def update(self,  left, right, up, shift, platforms, crystals, enemies, exit):
         if self.time < 1 and self.condition != 6:
@@ -66,6 +68,7 @@ class Hero(sprite.Sprite):
             self.image = pygame.transform.flip(self.image, True, False)
             self.x_speed = -MOVE_SPEED # Лево = x- n
             self.prev_cond = 3
+            self.walking = True
 
         if right and self.live == 1:
             if self.condition != 1:
@@ -77,6 +80,7 @@ class Hero(sprite.Sprite):
             self.x_speed = MOVE_SPEED # Право = x + n
             self.image = load_image("Walking\Moving Forward_0" + str(self.anim_time) + ".png")
             self.image = pygame.transform.scale(self.image, (WIDTH, HEIGHT))
+            self.walking = True
 
 
         if not(left or right) and self.live == 1:
@@ -107,9 +111,11 @@ class Hero(sprite.Sprite):
 
         if self.shift_used > 80 and self.prev_cond == 1:
             self.x_speed = 21
+            self.shift_sound = True
 
         if self.shift_used > 80 and self.prev_cond == 3:
             self.x_speed = -21
+            self.shift_sound = True
 
         if self.condition == 5:
             if self.anim_time == 14:
@@ -166,6 +172,7 @@ class Hero(sprite.Sprite):
                 self.time = 15 * 60
                 self.extra_jump = 50
                 crystal.kill()
+                self.picked_up = True
 
         for enemie in enemies:
             if sprite.collide_rect(self, enemie) and self.live == 1:
